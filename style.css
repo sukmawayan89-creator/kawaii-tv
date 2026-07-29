@@ -462,6 +462,7 @@ body {
   box-shadow: 0 0 40px rgba(59, 239, 126, 0.15), var(--shadow-device);
   width: 100%;
   max-width: 880px;
+  max-height: calc(100vh - 80px);
   aspect-ratio: 16/10;
 }
 
@@ -1089,4 +1090,100 @@ body {
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.4); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN FOR MOBILE & TABLETS (v6.3)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .emulator-workspace {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .dashboard-panel {
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: none;
+    order: 2;
+  }
+
+  body {
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .emulator-viewport-container {
+    order: 1;
+    height: auto;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .device-skin.TV-mode {
+    width: 100% !important;
+    max-width: 680px !important;
+    aspect-ratio: 16/10;
+    height: auto !important;
+    padding: 0 !important;
+  }
+  
+  .device-skin {
+    border-width: 8px !important;
+    border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-panel {
+    display: none !important;
+  }
+  
+  .emulator-workspace {
+    grid-template-columns: 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  body {
+    overflow: hidden;
+    height: 100vh;
+  }
+  
+  .emulator-viewport-container {
+    height: 100vh;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .device-skin.TV-mode {
+    width: 100vw !important;
+    height: 62.5vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .device-skin {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+  }
+  
+  .emulator-screen {
+    border-radius: 0 !important;
+  }
+
+  .float-nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 }
