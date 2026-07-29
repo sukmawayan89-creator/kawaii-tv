@@ -2,12 +2,14 @@ import urllib.request
 import urllib.parse
 import re
 import json
+import os
 import concurrent.futures
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, send_from_directory
 
 app = Flask(__name__)
 
 M3U_URL = 'https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u'
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def extract_headers_static(raw_url):
     target_url = raw_url
@@ -253,8 +255,12 @@ def proxy():
         return f"Proxy error: {e}", 500
 
 @app.route('/')
-def index():
-    return "Kawaii TV CORS Proxy API is online."
+def serve_index():
+    return send_from_directory(ROOT_DIR, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(ROOT_DIR, path)
 
 if __name__ == '__main__':
     app.run(port=8081)
