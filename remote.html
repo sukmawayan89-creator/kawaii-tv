@@ -269,10 +269,12 @@
   <!-- REMOTE MODULE -->
   <div class="remote-body">
     
-    <!-- Top Row (Power, Info) -->
+    <!-- Top Row (Power, Fullscreen, Mute) -->
     <div class="btn-row">
       <button class="btn-circle btn-power" onclick="sendCmd('power')"><i class="fa-solid fa-power-off"></i></button>
-      <button class="btn-circle" onclick="sendCmd('mute')"><i class="fa-solid fa-volume-xmark"></i></button>
+      <button class="btn-circle" onclick="sendCmd('fullscreen')" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+      <button class="btn-circle" onclick="sendCmd('escape')" title="Escape/Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+      <button class="btn-circle" onclick="sendCmd('mute')" title="Mute"><i class="fa-solid fa-volume-xmark"></i></button>
     </div>
 
     <!-- Directional Pad (D-PAD) -->

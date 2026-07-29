@@ -1146,40 +1146,89 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnPower) btnPower.click();
         break;
       case 'up':
-        const btnUp = document.getElementById('remote-up');
-        if (btnUp) btnUp.click();
+        if (state.activeApp) {
+          // In TV Mode, Up button goes to previous channel
+          const btnChPrev = document.getElementById('btn-prev-channel');
+          if (btnChPrev) btnChPrev.click();
+        } else {
+          // In Home Mode, navigate app grid up
+          const cols = 5;
+          if (state.focusedAppIndex >= cols) {
+            state.focusedAppIndex -= cols;
+            updateFocus();
+          }
+        }
         break;
       case 'down':
-        const btnDown = document.getElementById('remote-down');
-        if (btnDown) btnDown.click();
+        if (state.activeApp) {
+          // In TV Mode, Down button goes to next channel
+          const btnChNext = document.getElementById('btn-next-channel');
+          if (btnChNext) btnChNext.click();
+        } else {
+          // In Home Mode, navigate app grid down
+          const totalApps = state.apps.length;
+          const cols = 5;
+          if (state.focusedAppIndex + cols < totalApps) {
+            state.focusedAppIndex += cols;
+            updateFocus();
+          }
+        }
         break;
       case 'left':
-        const btnLeft = document.getElementById('remote-left');
-        if (btnLeft) btnLeft.click();
+        if (!state.activeApp) {
+          if (state.focusedAppIndex > 0) {
+            state.focusedAppIndex--;
+            updateFocus();
+          }
+        }
         break;
       case 'right':
-        const btnRight = document.getElementById('remote-right');
-        if (btnRight) btnRight.click();
+        if (!state.activeApp) {
+          if (state.focusedAppIndex < state.apps.length - 1) {
+            state.focusedAppIndex++;
+            updateFocus();
+          }
+        }
         break;
       case 'ok':
-        const btnOk = document.getElementById('remote-ok');
-        if (btnOk) btnOk.click();
+        if (!state.activeApp) {
+          const app = state.apps[state.focusedAppIndex];
+          if (app) launchApp(app);
+        }
         break;
       case 'back':
-        const btnBack = document.getElementById('remote-back');
-        if (btnBack) btnBack.click();
+      case 'escape':
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+          showToast('Keluar Layar Penuh');
+        } else if (state.activeApp) {
+          closeAppPlayer();
+        } else if (viewApkInstaller.classList.contains('active')) {
+          viewApkInstaller.classList.remove('active');
+          viewHome.classList.add('active');
+        }
         break;
       case 'home':
-        const btnHome = document.getElementById('remote-home');
-        if (btnHome) btnHome.click();
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        closeAppPlayer();
+        viewApkInstaller.classList.remove('active');
+        viewHome.classList.add('active');
         break;
       case 'volup':
-        const btnVolUp = document.getElementById('remote-vol-up');
-        if (btnVolUp) btnVolUp.click();
+        if (liveVideoPlayer) {
+          liveVideoPlayer.volume = Math.min(1, liveVideoPlayer.volume + 0.1);
+          state.volume = liveVideoPlayer.volume;
+          showToast(`Volume: ${Math.round(state.volume * 100)}%`);
+        }
         break;
       case 'voldown':
-        const btnVolDown = document.getElementById('remote-vol-down');
-        if (btnVolDown) btnVolDown.click();
+        if (liveVideoPlayer) {
+          liveVideoPlayer.volume = Math.max(0, liveVideoPlayer.volume - 0.1);
+          state.volume = liveVideoPlayer.volume;
+          showToast(`Volume: ${Math.round(state.volume * 100)}%`);
+        }
         break;
       case 'chnext':
         const btnChNext = document.getElementById('btn-next-channel');
@@ -1193,6 +1242,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (liveVideoPlayer) {
           liveVideoPlayer.muted = !liveVideoPlayer.muted;
           showToast(liveVideoPlayer.muted ? 'Muted (Suara Senyap)' : 'Suara Aktif');
+        }
+        break;
+      case 'fullscreen':
+        const container = document.getElementById('device-frame') || liveVideoPlayer;
+        if (!document.fullscreenElement) {
+          if (container.requestFullscreen) {
+            container.requestFullscreen();
+          } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+          }
+          showToast('Layar Penuh (Fullscreen)');
+        } else {
+          document.exitFullscreen().catch(() => {});
+          showToast('Keluar Layar Penuh');
         }
         break;
     }
