@@ -9,7 +9,8 @@ from flask import Flask, jsonify, request, Response, send_from_directory
 app = Flask(__name__)
 
 M3U_URL = 'https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u'
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = CURRENT_DIR if os.path.exists(os.path.join(CURRENT_DIR, 'index.html')) else os.path.dirname(CURRENT_DIR)
 
 def extract_headers_static(raw_url):
     target_url = raw_url
@@ -231,7 +232,6 @@ def proxy():
                             
                             final_url = resolved_url + pipe_suffix
                             host = request.headers.get('host', 'localhost:8080')
-                            # Resolve the absolute proxy path on the serverless host
                             line = f"https://{host}/proxy?url={urllib.parse.quote_plus(final_url)}"
                         new_lines.append(line)
                     content = '\n'.join(new_lines).encode('utf-8')

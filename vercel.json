@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/channels", "destination": "/api" },
-    { "source": "/proxy", "destination": "/api" }
+    { "source": "/channels", "destination": "/index.py" },
+    { "source": "/proxy", "destination": "/index.py" }
   ]
 }
