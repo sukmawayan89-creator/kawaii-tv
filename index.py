@@ -11,6 +11,7 @@ app = Flask(__name__)
 M3U_URL = 'https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u'
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = CURRENT_DIR if os.path.exists(os.path.join(CURRENT_DIR, 'index.html')) else os.path.dirname(CURRENT_DIR)
+current_remote_command = None
 
 def extract_headers_static(raw_url):
     target_url = raw_url
@@ -253,6 +254,19 @@ def proxy():
             return Response(content, mimetype=content_type)
     except Exception as e:
         return f"Proxy error: {e}", 500
+
+@app.route('/remote-send')
+def remote_send():
+    global current_remote_command
+    current_remote_command = request.args.get('cmd')
+    return jsonify({'status': 'ok'})
+
+@app.route('/remote-get')
+def remote_get():
+    global current_remote_command
+    cmd = current_remote_command
+    current_remote_command = None
+    return jsonify({'cmd': cmd})
 
 @app.route('/')
 def serve_index():

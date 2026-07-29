@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDeviceNav();
   initVideoPlayerEvents();
   initChannelNavigatorEvents();
+  initRemoteReceiver();
 
   // Polling interval for background auto-refresh (every 30 seconds)
   setInterval(loadApps, 30000);
@@ -1113,6 +1114,88 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- APK WIZARD DIRECT INPUT LOADER ---
   function initApkInstaller() {
     // Handled inside direct listener bindings
+  }
+
+  // --- BACKGROUND REMOTE RECEIVER ---
+  function initRemoteReceiver() {
+    setInterval(() => {
+      // Only request remote commands if TV is powered on
+      if (!state.isPowerOn) return;
+      
+      fetch(`${BACKEND_URL}/remote-get`)
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.cmd) {
+            console.log(`Received Remote Command: ${data.cmd}`);
+            handleRemoteCommand(data.cmd);
+          }
+        })
+        .catch(() => {});
+    }, 450); // check every 450ms
+  }
+
+  function handleRemoteCommand(cmd) {
+    if (!state.isPowerOn && cmd !== 'power') return;
+    
+    switch(cmd) {
+      case 'power':
+        const btnPower = document.getElementById('remote-power');
+        if (btnPower) btnPower.click();
+        break;
+      case 'up':
+        const btnUp = document.getElementById('remote-up');
+        if (btnUp) btnUp.click();
+        break;
+      case 'down':
+        const btnDown = document.getElementById('remote-down');
+        if (btnDown) btnDown.click();
+        break;
+      case 'left':
+        const btnLeft = document.getElementById('remote-left');
+        if (btnLeft) btnLeft.click();
+        break;
+      case 'right':
+        const btnRight = document.getElementById('remote-right');
+        if (btnRight) btnRight.click();
+        break;
+      case 'ok':
+        const btnOk = document.getElementById('remote-ok');
+        if (btnOk) btnOk.click();
+        break;
+      case 'back':
+        const btnBack = document.getElementById('remote-back');
+        if (btnBack) btnBack.click();
+        break;
+      case 'home':
+        const btnHome = document.getElementById('remote-home');
+        if (btnHome) btnHome.click();
+        break;
+      case 'volup':
+        const btnVolUp = document.getElementById('remote-vol-up');
+        if (btnVolUp) btnVolUp.click();
+        break;
+      case 'voldown':
+        const btnVolDown = document.getElementById('remote-vol-down');
+        if (btnVolDown) btnVolDown.click();
+        break;
+      case 'chnext':
+        const btnChNext = document.getElementById('btn-next-channel');
+        if (btnChNext) btnChNext.click();
+        break;
+      case 'chprev':
+        const btnChPrev = document.getElementById('btn-prev-channel');
+        if (btnChPrev) btnChPrev.click();
+        break;
+      case 'mute':
+        if (liveVideoPlayer) {
+          liveVideoPlayer.muted = !liveVideoPlayer.muted;
+          showToast(liveVideoPlayer.muted ? 'Muted (Suara Senyap)' : 'Suara Aktif');
+        }
+        break;
+    }
   }
 
 });
