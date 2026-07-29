@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/channels", "destination": "/api" },
+    { "source": "/proxy", "destination": "/api" }
+  ]
+}
